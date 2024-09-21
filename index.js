@@ -2897,7 +2897,7 @@ exports.clearInterval = function (timeout) { timeout.close(); };
       //
       // Setup the real-time client.
       //
-      primus.client();
+      primus.client(options);
 
       //
       // Process the potential plugins.
@@ -3501,7 +3501,7 @@ exports.clearInterval = function (timeout) { timeout.close(); };
     // These libraries are automatically inserted at the server-side using the
     // Primus#library method.
     //
-    Primus.prototype.client = function client() {
+    Primus.prototype.client = function client(inputOptions) {
       const primus = this;
       let socket;
 
@@ -3555,7 +3555,8 @@ exports.clearInterval = function (timeout) { timeout.close(); };
               primus.transport, // options.
             );
           } else {
-            primus.socket = socket = new Factory(primus.uri(options));
+            if (inputOptions.token) primus.socket = socket = new Factory(primus.uri(options), [inputOptions.token]);
+            else primus.socket = socket = new Factory(primus.uri(options));
             socket.binaryType = 'arraybuffer';
           }
         } catch (e) { return primus.emit('error', e); }
